@@ -1,28 +1,42 @@
 import { Request, Response } from 'express';
 import * as itemService from '../services/itemService';
-import { ICreateItemRequest } from '../../types/item';
+import { ICreateItemRequest, IGetItemRequest } from '../../types/item';
+import { handleError, handleResponse } from '../utils/utils';
 
 export const createItem = async (
   req: Request<{}, {}, ICreateItemRequest>,
   res: Response
 ): Promise<void> => {
   try {
-    const item = await itemService.createItem(req.body);
-    res.status(201).json(item);
+    await itemService.createItem(req.body);
+    handleResponse(res, 200, 'Item created successfully');
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.name === 'ValidationError') {
-        res.status(400).json({ error: error.message });
-      } else if (error.name === 'DuplicateError') {
-        res.status(409).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: error.message });
-      }
-    } else {
-      res.status(500).json({ 
-        error: 'An unexpected error occurred',
-        details: process.env.NODE_ENV === 'development' ? String(error) : undefined
-      });
-    }
+    handleError(res, error);
   }
 };
+
+export const listItem = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const items = await itemService.getItems();
+    handleResponse(res, 200, 'Items retrieved successfully', items);
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+export const getItem = async (
+  req: Request<{ id: string }, {}, IGetItemRequest>,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = req.params.id;
+    const items = await itemService.getItemById(id); 
+    handleResponse(res, 200, 'Item retrieved successfully', items);
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+

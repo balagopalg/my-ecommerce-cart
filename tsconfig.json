@@ -20,8 +20,12 @@
     "esModuleInterop": true,
     "strict": true,
     "paths": {},
-    "rootDir": "./src",
-  },   
+    "rootDir": "./",
+  },  
+  "include": [
+    "src/**/*.ts",
+    "index.ts" 
+  ], 
   "exclude": [
     ".vscode",
     "webpack.config.js",
