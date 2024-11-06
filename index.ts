@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use(express.json());
 
-app.use('/api', itemRoutes);
+app.use('/api/v1', itemRoutes);
 
 connectDB();
 
